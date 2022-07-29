@@ -12,10 +12,8 @@ import re
 # List: https://huggingface.co/huggingartists
 
 st.title("Lyrical")
-name = st.text_input("Lyrics","")
-st.write("Output " + str(name))
 
-option = st.selectbox('Artist Name',(
+ARTIST_STYLE = st.selectbox('Artist Name',(
     'kendrick-lamar',
     'kanye-west',
     'nf',
@@ -31,5 +29,9 @@ option = st.selectbox('Artist Name',(
     'juice-wrld',
     'snoop-dogg',
     ))
-st.write('You selected:', option)
+MOTIVATION = st.text_input("Lyrics","")
+if ARTIST_STYLE and MOTIVATION:
+    st.write("Output " + str(ARTIST_STYLE))
+    st.write("Output " + str(MOTIVATION))
+
 
