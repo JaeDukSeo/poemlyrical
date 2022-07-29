@@ -540,16 +540,65 @@ def poem_scheme(kind):
             meter_scheme[line] = "~`~`~`"
         rhyme_scheme = [[0],"",[0],[poem_line[1]],[0],"",[0],[poem_line[5]],[0],"",[0],[poem_line[9]],[0],"",[0],[poem_line[13]]]
     return number_of_lines, rhyme_scheme, meter_scheme
-            
-#-----------------------------------------------
 
 tokenizer = GPT2Tokenizer.from_pretrained('gpt2') 
 rhyme_dictionary, reverse_rhyme_dictionary, bad_rhymes, syllable_count_dictionary, rhyming_tokens, syllable_tokens = create_rhyme_dictionary(tokenizer)
 stress_dictionary = create_stress_dictionary()   
 stress_tokens = pickle.load( open("stress_tokens.p", "rb"))
 xprint("rhymes loaded")
-#load gpt-2 (takes a few seconds)                
 model = GPT2LMHeadModel.from_pretrained(params.model_name)
 xprint("model loaded")
+
+
+#from here on must be run every time you want to create a new poem. If you want to generate multiple poems, maybe wrap this in a while-loop?
+seed(params.random_seed)
+if MOTIVATION:
+    with torch.no_grad():
+        raw_prompt = MOTIVATION
+        prompt = tokenizer.encode(raw_prompt)
+        original_length = len(prompt)
+        past = None
+        (probs, past) = expand_node(prompt, None) 
+        scheme = input("ballad, limerick, couplets or sonnet? ")
+        poem_line = [""] * 100000 #this just has to be long enough the next line will never complain-- fixed two lines down
+        number_of_lines, rhyme_scheme, meter_scheme = poem_scheme(scheme)
+        poem_line = [""] * number_of_lines  
+        line = 0
+        backup_prompts = [""]*100
+        backup_pasts = [""]*100
+        while line < number_of_lines:
+            stuck_counter = 0
+            backup_prompts[line]=prompt
+            backup_pasts[line]=past
+            number_of_lines, rhyme_scheme, meter_scheme = poem_scheme(scheme)
+            target_rhyme_list = []
+            for target_rhyme_line in rhyme_scheme[line]:
+                target_rhyme_list.append(tokenizer.decode(target_rhyme_line))
+            if target_rhyme_list == []:
+                target_rhyme_list = ""
+            xprint(target_rhyme_list)
+            target_meter = meter_scheme[line]
+            this_line = grow_branches(prompt,probs,1,past,params,len(prompt),target_rhyme_list,target_meter)
+            if this_line == False:
+                print("something went wrong, quitting")
+                break
+            poem_line[line] = this_line
+            line = line + 1
+            prompt = prompt  + this_line
+            past_backup = past
+            (probs, past) = expand_node(prompt, None) 
+        # this just changes the last token to a period. Very hacky.
+        if poem_line[-1][-1] in end_punctuation:
+            poem_line[-1][-1] = tokenizer.encode('.')[0]
+        print()
+        print(tokenizer.decode(prompt[original_length:]))
+        print()
+        print(tokenizer.decode(poem_line[0]))
+        for line in range(1,number_of_lines):
+            if poem_line[line][0] in acceptable_punctuation:
+                poem_line[line-1].append(poem_line[line][0])
+                poem_line[line] = poem_line[line][1:]
+        for line in range(1,number_of_lines):
+            st.write(tokenizer.decode(poem_line[line]))
 
 
