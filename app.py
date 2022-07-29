@@ -6,6 +6,7 @@ import torch.nn.functional as F
 from random import randint, seed
 import math
 import pickle 
+from random import randrange
 import re
 
 # https://github.com/AlekseyKorshuk/huggingartists
@@ -548,7 +549,7 @@ st.write("model loaded")
 
 
 #from here on must be run every time you want to create a new poem. If you want to generate multiple poems, maybe wrap this in a while-loop?
-seed(params.random_seed)
+seed(randrange(10))
 if MOTIVATION:
     with torch.no_grad():
         raw_prompt = MOTIVATION
@@ -588,7 +589,7 @@ if MOTIVATION:
         if poem_line[-1][-1] in end_punctuation:
             poem_line[-1][-1] = tokenizer.encode('.')[0]
         print()
-        st.write(tokenizer.decode(prompt[original_length:]))
+        #st.write(tokenizer.decode(prompt[original_length:]))
         print()
         st.write(tokenizer.decode(poem_line[0]))
         for line in range(1,number_of_lines):
