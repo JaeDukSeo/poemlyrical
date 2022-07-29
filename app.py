@@ -476,7 +476,6 @@ def create_rhyme_dictionary(tokenizer):
     
     rhyming_tokens = pickle.load( open( "rhyming_tokens.p", "rb" ) )
     syllable_tokens = pickle.load( open( "syllable_tokens.p", "rb" ) )
-    
     bad_rhymes = ["a","an","it","is","as","at","was","of","at","that",
                      "has","your","my","his","their","on","for","its","to",
                      "from","if","ur","re","our","un","dis","diss","mis",
