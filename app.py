@@ -28,6 +28,12 @@ ARTIST_STYLE = st.selectbox('Artist Name',(
     'lil-uzi-vert',
     'juice-wrld',
     'snoop-dogg',
+    'distilgpt-2',
+    'gpt2',
+    'gpt2-medium',
+    'gpt2-large',
+    'gpt2-medium',
+    'gpt2-xl',
     ))
 MOTIVATION = st.text_input("Lyrics","")
 if ARTIST_STYLE and MOTIVATION:
