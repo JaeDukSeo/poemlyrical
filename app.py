@@ -543,4 +543,13 @@ def poem_scheme(kind):
             
 #-----------------------------------------------
 
+tokenizer = GPT2Tokenizer.from_pretrained('gpt2') 
+rhyme_dictionary, reverse_rhyme_dictionary, bad_rhymes, syllable_count_dictionary, rhyming_tokens, syllable_tokens = create_rhyme_dictionary(tokenizer)
+stress_dictionary = create_stress_dictionary()   
+stress_tokens = pickle.load( open("stress_tokens.p", "rb"))
+xprint("rhymes loaded")
+#load gpt-2 (takes a few seconds)                
+model = GPT2LMHeadModel.from_pretrained(params.model_name)
+xprint("model loaded")
+
 
