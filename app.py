@@ -539,18 +539,17 @@ def poem_scheme(kind):
         rhyme_scheme = [[0],"",[0],[poem_line[1]],[0],"",[0],[poem_line[5]],[0],"",[0],[poem_line[9]],[0],"",[0],[poem_line[13]]]
     return number_of_lines, rhyme_scheme, meter_scheme
 
-tokenizer = GPT2Tokenizer.from_pretrained(params.model_name) 
-rhyme_dictionary, reverse_rhyme_dictionary, bad_rhymes, syllable_count_dictionary, rhyming_tokens, syllable_tokens = create_rhyme_dictionary(tokenizer)
-stress_dictionary = create_stress_dictionary()   
-stress_tokens = pickle.load( open("stress_tokens.p", "rb"))
-st.write("rhymes loaded")
-model = GPT2LMHeadModel.from_pretrained(params.model_name)
-st.write("model loaded")
-
-
 #from here on must be run every time you want to create a new poem. If you want to generate multiple poems, maybe wrap this in a while-loop?
-seed(randrange(10))
 if MOTIVATION:
+    seed(randrange(10))
+    tokenizer = GPT2Tokenizer.from_pretrained(params.model_name) 
+    rhyme_dictionary, reverse_rhyme_dictionary, bad_rhymes, syllable_count_dictionary, rhyming_tokens, syllable_tokens = create_rhyme_dictionary(tokenizer)
+    stress_dictionary = create_stress_dictionary()   
+    stress_tokens = pickle.load( open("stress_tokens.p", "rb"))
+    st.write("rhymes loaded")
+    model = GPT2LMHeadModel.from_pretrained(params.model_name)
+    st.write("model loaded")
+
     with torch.no_grad():
         raw_prompt = MOTIVATION
         prompt = tokenizer.encode(raw_prompt)
