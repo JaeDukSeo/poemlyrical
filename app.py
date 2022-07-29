@@ -538,13 +538,13 @@ def poem_scheme(kind):
         rhyme_scheme = [[0],"",[0],[poem_line[1]],[0],"",[0],[poem_line[5]],[0],"",[0],[poem_line[9]],[0],"",[0],[poem_line[13]]]
     return number_of_lines, rhyme_scheme, meter_scheme
 
-tokenizer = GPT2Tokenizer.from_pretrained('gpt2') 
+tokenizer = GPT2Tokenizer.from_pretrained(params.model_name) 
 rhyme_dictionary, reverse_rhyme_dictionary, bad_rhymes, syllable_count_dictionary, rhyming_tokens, syllable_tokens = create_rhyme_dictionary(tokenizer)
 stress_dictionary = create_stress_dictionary()   
 stress_tokens = pickle.load( open("stress_tokens.p", "rb"))
-xprint("rhymes loaded")
+st.write("rhymes loaded")
 model = GPT2LMHeadModel.from_pretrained(params.model_name)
-xprint("model loaded")
+st.write("model loaded")
 
 
 #from here on must be run every time you want to create a new poem. If you want to generate multiple poems, maybe wrap this in a while-loop?
@@ -556,7 +556,7 @@ if MOTIVATION:
         original_length = len(prompt)
         past = None
         (probs, past) = expand_node(prompt, None) 
-        scheme = input("ballad, limerick, couplets or sonnet? ")
+        scheme = "sonnet"
         poem_line = [""] * 100000 #this just has to be long enough the next line will never complain-- fixed two lines down
         number_of_lines, rhyme_scheme, meter_scheme = poem_scheme(scheme)
         poem_line = [""] * number_of_lines  
@@ -588,9 +588,9 @@ if MOTIVATION:
         if poem_line[-1][-1] in end_punctuation:
             poem_line[-1][-1] = tokenizer.encode('.')[0]
         print()
-        print(tokenizer.decode(prompt[original_length:]))
+        st.write(tokenizer.decode(prompt[original_length:]))
         print()
-        print(tokenizer.decode(poem_line[0]))
+        st.write(tokenizer.decode(poem_line[0]))
         for line in range(1,number_of_lines):
             if poem_line[line][0] in acceptable_punctuation:
                 poem_line[line-1].append(poem_line[line][0])
