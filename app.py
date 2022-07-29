@@ -54,7 +54,11 @@ params.other_expansion = 10 # no more than this many words will be tried for the
 params.random_seed = 28 # if the seed and prompt are the same, the poem will be the same
 params.line_end_punctuation_constraint = True
 params.punctuation_probability_threshold = .001
-params.model_name = "poetry" # change this to "gpt2-xl" to get started. "poetry" requires a lot more effort to get running-- see the README for details.
+
+if "gpt2" in ARTIST_STYLE:
+    params.model_name =  ARTIST_STYLE # change this to "gpt2-xl" to get started. "poetry" requires a lot more effort to get running-- see the README for details.
+else:
+    params.model_name = "huggingartists/"+ARTIST_STYLE # change this to "gpt2-xl" to get started. "poetry" requires a lot more effort to get running-- see the README for details.
 params.stuck_counter_limit = 1000
 params.one_syllable_suppression = 20
 debug = False
